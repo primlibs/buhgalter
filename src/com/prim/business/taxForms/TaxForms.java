@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.prim.bizness.taxForms;
+package com.prim.business.taxForms;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.prim.bizness;
+package com.prim.business;
 
-import com.prim.bizness.lawForms.LawForms;
+import com.prim.business.lawForms.LawForms;
 
 /**
  *
