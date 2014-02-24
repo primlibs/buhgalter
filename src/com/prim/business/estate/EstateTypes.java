@@ -16,11 +16,11 @@ public enum EstateTypes {
   
   STEAD(1, "Земля"), BUILDING(2, "Здание");
   
-  private int id;
+  private Integer id;
   
   private String name;
   
-  public int getId() {
+  public Integer getId() {
     return id;
   }
   
@@ -33,10 +33,10 @@ public enum EstateTypes {
     this.name = name;
   }
   
-  public static Map<Integer, String>  immovables() {
-    Map<Integer, String> map = new LinkedHashMap();
-    map.put(STEAD.id, STEAD.name);
-    map.put(BUILDING.id, BUILDING.name);
+  public static Map<String, Object>  immovables() {
+    Map<String, Object> map = new LinkedHashMap();
+    map.put(STEAD.id.toString(), STEAD.name);
+    map.put(BUILDING.id.toString(), BUILDING.name);
     return map;
   }
   
