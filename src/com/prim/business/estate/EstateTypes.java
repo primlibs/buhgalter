@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * типы имущества
+ * типы 
  * 
  * @author Rice Pavel
  */
@@ -33,14 +33,14 @@ public enum EstateTypes {
     this.name = name;
   }
   
-  public static Map<Integer, String>  movables() {
+  public static Map<Integer, String>  immovables() {
     Map<Integer, String> map = new LinkedHashMap();
     map.put(STEAD.id, STEAD.name);
     map.put(BUILDING.id, BUILDING.name);
     return map;
   }
   
-  public static Map<Integer, String>  недвижимость() {
+  public static Map<Integer, String>  movables() {
     Map<Integer, String> map = new LinkedHashMap();
     return map;
   }
