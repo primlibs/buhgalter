@@ -8,8 +8,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- *
- * @author User
+ * типы имущества
+ * 
+ * @author Rice Pavel
  */
 public enum EstateTypes {
   
