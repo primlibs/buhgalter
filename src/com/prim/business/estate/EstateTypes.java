@@ -14,7 +14,8 @@ import java.util.Map;
  */
 public enum EstateTypes {
   
-  STEAD(1, "Земля"), BUILDING(2, "Здание");
+  STEAD(1, "Земля"), BUILDING(2, "Здание"), LIFTING_ENGINE(3, "Грузоподъемная техника"), 
+  MOTORIZED_VEHICLES(4, "Самоходные машины"), CAR(5, "Автотранспорт"), SHIP(6, "Суда");
   
   private Integer id;
   
@@ -41,6 +42,10 @@ public enum EstateTypes {
     return map;
   }
   
+  /**
+   * недвижимость
+   * @return 
+   */
   public static Map<String, Object>  immovables() {
     Map<String, Object> map = new LinkedHashMap();
     map.put(STEAD.id.toString(), STEAD.name);
@@ -48,8 +53,16 @@ public enum EstateTypes {
     return map;
   }
   
-  public static Map<Integer, String>  movables() {
-    Map<Integer, String> map = new LinkedHashMap();
+  /**
+   * движимые типы имущества
+   * @return 
+   */
+  public static Map<String, Object>  movables() {
+    Map<String, Object> map = new LinkedHashMap();
+    map.put(LIFTING_ENGINE.id.toString(), LIFTING_ENGINE.name);
+    map.put(MOTORIZED_VEHICLES.id.toString(), MOTORIZED_VEHICLES.name);
+    map.put(CAR.id.toString(), CAR.name);
+    map.put(SHIP.id.toString(), SHIP.name);
     return map;
   }
   
