@@ -33,6 +33,14 @@ public enum EstateTypes {
     this.name = name;
   }
   
+  public static Map<String, Object> all() {
+    Map<String, Object> map = new LinkedHashMap();
+    for (EstateTypes type: EstateTypes.values()) {
+      map.put(type.id.toString(), type.name);
+    }
+    return map;
+  }
+  
   public static Map<String, Object>  immovables() {
     Map<String, Object> map = new LinkedHashMap();
     map.put(STEAD.id.toString(), STEAD.name);
@@ -43,6 +51,18 @@ public enum EstateTypes {
   public static Map<Integer, String>  movables() {
     Map<Integer, String> map = new LinkedHashMap();
     return map;
+  }
+  
+  public static String getNameById(Object typeId) {
+    String name = "";
+    if (typeId != null) {
+      Map<String, Object> all = all();
+      String typeIdString = typeId.toString();
+      if (all.get(typeIdString) != null) {
+        name = all.get(typeIdString).toString();
+      }
+    }
+    return name;
   }
   
 }
