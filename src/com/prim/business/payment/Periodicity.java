@@ -2,57 +2,46 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.prim.business.cost;
+package com.prim.business.payment;
 
 import com.prim.business.estate.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * типы затрат
- * 
+ * периодичность начислений
+ *
  * @author Rice Pavel
  */
-public enum CostTypes {
+public enum Periodicity {
+
+  ONETIME(1, "Единоразовые"), EVERYDAY(2, "Ежесуточные"), MONTHLY(3, "Ежемесячные"),
+  QUARTERLY(4, "Ежеквартальные"), YEARLY(5, "Ежегодные");
   
-  PERMANENT(1, "Постоянные"), MONTHLY(2, "Ежемесячные");
-  
-  private Integer id;
-  
-  private String name;
-  
+  private final Integer id;
+  private final String name;
+
   public Integer getId() {
     return id;
   }
-  
+
   public String getName() {
     return name;
   }
-  
-  CostTypes(int id, String name) {
+
+  private Periodicity(int id, String name) {
     this.id = id;
     this.name = name;
   }
-  
+
   public static Map<String, Object> all() {
     Map<String, Object> map = new LinkedHashMap();
-    for (CostTypes type: CostTypes.values()) {
+    for (Periodicity type : Periodicity.values()) {
       map.put(type.id.toString(), type.name);
     }
     return map;
   }
-  
-  /**
-   * недвижимость
-   * @return 
-   */
-  public static Map<String, Object>  immovables() {
-    Map<String, Object> map = new LinkedHashMap();
-    map.put(PERMANENT.id.toString(), PERMANENT.name);
-    map.put(MONTHLY.id.toString(), MONTHLY.name);
-    return map;
-  }
-  
+
   public static String getNameById(Object typeId) {
     String name = "";
     if (typeId != null) {
@@ -64,5 +53,4 @@ public enum CostTypes {
     }
     return name;
   }
-  
 }
