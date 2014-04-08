@@ -37,7 +37,7 @@ public class CostCalculator {
     double amount = Double.parseDouble(amountStr);
     // проверить правильность найденного диапазона
     if (costDateFrom.before(costDateTo) && reportDateFrom.before(reportDateTo) && diapasonDateFrom.before(diapasonDateTo)) {
-      if (costType.equals(Periodicity.ONETIME)) {
+      if (costType.equals(Periodicity.ONETIME.getId().toString())) {
         // если тип - единоразовый
         // если дата costDateFrom входит в диапазон
         if ((costDateFrom.after(reportDateFrom) || costDateFrom.equals(reportDateFrom))
@@ -46,32 +46,40 @@ public class CostCalculator {
           chargeAmount = amount;
         }
         // начислить
-      } else if (costType.equals(Periodicity.EVERYDAY)) {
-        // если тип ежесуточный
-        // начислить каждый день 0.00 часов
-        /*
-        long msFrom = diapasonDateFrom.getTime();
-        long msTo = diapasonDateTo.getTime();
-        long msDay = 24 * 60 * 60 * 1000;
-        double days = Math.ceil((msTo - msFrom) / msDay);
+      } else if (costType.equals(Periodicity.EVERYDAY.getId().toString())) {
 
-         Calendar cl = Calendar.getInstance();
-         cl.setTime(diapasonDateFrom);
-         Calendar clTo = Calendar.getInstance();
-         clTo.setTime(diapasonDateTo);
-         // начисляем каждый день
-         if (!(cl.get(Calendar.HOUR_OF_DAY) == 0 && cl.get(Calendar.MINUTE) == 0)) {
-         cl.set(Calendar.HOUR_OF_DAY, 0);
-         cl.set(Calendar.MINUTE, 0);
-         cl.add(Calendar.DAY_OF_YEAR, 1);
-         }
-         while (cl.before(clTo)) {
-         charged = true;
-         chargeAmount += amount;
-         cl.add(Calendar.DAY_OF_YEAR, 1);
-         }
-         */
-      } else if (costType.equals(Periodicity.MONTHLY)) {
+        // переменная - период не кончился
+        boolean periodEnded = false;
+        // первый день
+        Calendar clStart = Calendar.getInstance();
+        clStart.setTime(diapasonDateFrom);
+        // конец диапазона
+        Calendar clEndDiapason = Calendar.getInstance();
+        clEndDiapason.setTime(diapasonDateTo);
+        // день конца отчета платежа
+        // год конца отчета платежа
+        Calendar clCostTo = Calendar.getInstance();
+        clCostTo.setTime(costDateTo);
+        int dayCostTo = clCostTo.get(Calendar.DAY_OF_YEAR);
+        int yearCostTo = clCostTo.get(Calendar.YEAR);
+        // прибавить
+        if (clStart.before(clEndDiapason)) {
+          charged = true;
+          chargeAmount += amount;
+        }
+        // пока период не кончился
+        while (!periodEnded) {
+          // прибавить день
+          clStart.add(Calendar.DAY_OF_YEAR, 1);
+          // если дата раньше чем конец периода и если это не день конца периода
+          if (clStart.before(clEndDiapason) && !(clStart.get(Calendar.DAY_OF_YEAR) == dayCostTo && clStart.get(Calendar.YEAR) == yearCostTo)) {
+            charged = true;
+            chargeAmount += amount;
+          } else {
+            periodEnded = true;
+          }
+        }
+      } else if (costType.equals(Periodicity.MONTHLY.getId().toString())) {
         // переменная - период не кончился
         boolean periodEnded = false;
         // период первого месяца
@@ -100,26 +108,23 @@ public class CostCalculator {
           clStart.add(Calendar.MONTH, 1);
           clStart.set(Calendar.DAY_OF_MONTH, 1);
           // проверка
-          if (clStart.after(clEndDiapason)) {
-            periodEnded = true;
-            break;
-          }
-          // конец - конец периода либо конец месяца
-          clEndMonth.add(Calendar.MONTH, 1);
-          clEndMonth.set(Calendar.DAY_OF_MONTH, clEndMonth.getActualMaximum(Calendar.DAY_OF_MONTH));
-          clEnd = clEndDiapason.before(clEndMonth) ? clEndDiapason : clEndMonth;
-          // получить число
-          day = costDate <= 31 ? costDate : clEndMonth.getActualMaximum(Calendar.DAY_OF_MONTH);
-          // если число входит в этот период - начислить
-          if (day >= clStart.get(Calendar.DAY_OF_MONTH) && day <= clEnd.get(Calendar.DAY_OF_MONTH)) {
-            charged = true;
-            chargeAmount += amount;
+          if (clStart.before(clEndDiapason)) {
+            // конец - конец периода либо конец месяца
+            clEndMonth.add(Calendar.MONTH, 1);
+            clEndMonth.set(Calendar.DAY_OF_MONTH, clEndMonth.getActualMaximum(Calendar.DAY_OF_MONTH));
+            clEnd = clEndDiapason.before(clEndMonth) ? clEndDiapason : clEndMonth;
+            // получить число
+            day = costDate <= 31 ? costDate : clEndMonth.getActualMaximum(Calendar.DAY_OF_MONTH);
+            // если число входит в этот период - начислить
+            if (day >= clStart.get(Calendar.DAY_OF_MONTH) && day <= clEnd.get(Calendar.DAY_OF_MONTH)) {
+              charged = true;
+              chargeAmount += amount;
+            }
           } else {
-            // иначе - период закончился
             periodEnded = true;
           }
         }
-      } else if (costType.equals(Periodicity.QUARTERLY)) {
+      } else if (costType.equals(Periodicity.QUARTERLY.getId().toString())) {
         // период первого месяца
         // начало - начало диапазона
         Calendar clStart = Calendar.getInstance();
@@ -167,10 +172,9 @@ public class CostCalculator {
             }
           } else {
             periodEnded = true;
-            break;
           }
         }
-      } else if (costType.equals(Periodicity.YEARLY)) {
+      } else if (costType.equals(Periodicity.YEARLY.getId().toString())) {
         // период первого месяца
         // начало - начало диапазона
         Calendar clStart = Calendar.getInstance();
@@ -201,7 +205,6 @@ public class CostCalculator {
             }
           } else {
             periodEnded = true;
-            break;
           }
         }
       }
