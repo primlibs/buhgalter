@@ -37,7 +37,7 @@ public class CostCalculator {
   /**
    * создает объект и сразу вычисляет сумму начисления
    * @param costDateFrom дата начала начисления
-   * @param costDateTo дата конца начисления
+   * @param costDateTo дата конца начисления. Может равняться null
    * @param periodDateFrom дата начала периода, за который нужно рассчитать
    * @param periodDateTo дата конца периода, за который нужно рассчитать
    * @param amount сумма начисления
@@ -47,10 +47,17 @@ public class CostCalculator {
    */
   public CostCalculator(Date costDateFrom, Date costDateTo, Date periodDateFrom, Date periodDateTo, double amount, String costType, int calculationDate) throws Exception {
 
-    if (costDateFrom != null && costDateTo != null && periodDateFrom != null && periodDateTo != null) {
+    if (costDateFrom != null  && periodDateFrom != null && periodDateTo != null) {
 
       testInfo += "1";
 
+      if (costDateTo == null) {
+        Calendar cl = Calendar.getInstance();
+        cl.setTime(periodDateTo);
+        cl.add(Calendar.DAY_OF_YEAR, 1);
+        costDateTo = cl.getTime();
+      }
+      
       costDateFrom = FormatDate.getStartOfDate(costDateFrom);
       costDateTo = FormatDate.getStartOfDate(costDateTo);
       periodDateFrom = FormatDate.getStartOfDate(periodDateFrom);
