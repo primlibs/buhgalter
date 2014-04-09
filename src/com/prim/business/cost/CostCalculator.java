@@ -19,35 +19,57 @@ import java.util.List;
  */
 public class CostCalculator {
 
+  /**
+   * нужно ли делать начисление
+   */
   private boolean charged;
+  
+  /**
+   * сумма начисления
+   */
   private double chargeAmount;
+  
+  /**
+   * тестовая информация
+   */
   private String testInfo = "";
 
-  public CostCalculator(Date costDateFrom, Date costDateTo, Date reportDateFrom, Date reportDateTo, double amount, String costType, int calculationDate) throws Exception {
+  /**
+   * создает объект и сразу вычисляет сумму начисления
+   * @param costDateFrom дата начала начисления
+   * @param costDateTo дата конца начисления
+   * @param periodDateFrom дата начала периода, за который нужно рассчитать
+   * @param periodDateTo дата конца периода, за который нужно рассчитать
+   * @param amount сумма начисления
+   * @param costType тип начисления
+   * @param calculationDate дата, в которую нужно делать начисление
+   * @throws Exception 
+   */
+  public CostCalculator(Date costDateFrom, Date costDateTo, Date periodDateFrom, Date periodDateTo, double amount, String costType, int calculationDate) throws Exception {
 
-    if (costDateFrom != null && costDateTo != null && reportDateFrom != null && reportDateTo != null) {
+    if (costDateFrom != null && costDateTo != null && periodDateFrom != null && periodDateTo != null) {
 
       testInfo += "1";
 
       costDateFrom = FormatDate.getStartOfDate(costDateFrom);
       costDateTo = FormatDate.getStartOfDate(costDateTo);
-      reportDateFrom = FormatDate.getStartOfDate(reportDateFrom);
-      reportDateTo = FormatDate.getStartOfDate(reportDateTo);
+      periodDateFrom = FormatDate.getStartOfDate(periodDateFrom);
+      periodDateTo = FormatDate.getStartOfDate(periodDateTo);
 
       // найти период пересечения диапазонов
-      Date diapasonDateFrom = costDateFrom.after(reportDateFrom) ? costDateFrom : reportDateFrom;
+      Date diapasonDateFrom = costDateFrom.after(periodDateFrom) ? costDateFrom : periodDateFrom;
 
-      Date diapasonDateTo = costDateTo.before(reportDateTo) ? costDateTo : reportDateTo;
+      Date diapasonDateTo = costDateTo.before(periodDateTo) ? costDateTo : periodDateTo;
 
       // проверить правильность найденного диапазона
       if ((costDateFrom.before(costDateTo) || costDateFrom.equals(costDateTo))
-              && (reportDateFrom.before(reportDateTo) || reportDateFrom.equals(reportDateTo))
+              && (periodDateFrom.before(periodDateTo) || periodDateFrom.equals(periodDateTo))
               && (diapasonDateFrom.before(diapasonDateTo) || diapasonDateFrom.equals(diapasonDateTo))) {
 
         testInfo += "2";
 
         if (costType.equals(Periodicity.ONETIME.getId().toString())) {
-          chargeOneTime(costDateFrom, reportDateFrom, reportDateTo, amount);
+          chargeOneTime(costDateFrom, periodDateFrom, periodDateTo, amount);
         } else if (costType.equals(Periodicity.EVERYDAY.getId().toString())) {
           chargeEveryDay(diapasonDateFrom, diapasonDateTo, costDateTo, amount);
         } else if (costType.equals(Periodicity.MONTHLY.getId().toString())) {
