@@ -21,35 +21,46 @@ public class CostCalculator {
 
   private boolean charged;
   private double chargeAmount;
+  private String testInfo = "";
 
   public CostCalculator(String costDateFromStr, String costDateToStr, String reportDateFromStr, String reportDateToStr, String amountStr, String costType, String costDateStr) throws Exception {
     // проверить правильность диапазонов
-    Date costDateFrom = FormatDate.getDateFromString(costDateFromStr);
+
+    testInfo += costDateFromStr + " " + costDateToStr + " " + reportDateFromStr + " " + reportDateToStr + " " + amountStr + " " + costType + " " + costDateStr + "<br/>";
+
+    Date costDateFrom = FormatDate.getDateFromString(costDateFromStr);    
     Date costDateTo = FormatDate.getDateFromString(costDateToStr);
-    Date reportDateFrom = FormatDate.getDateFromString(reportDateFromStr);
+    Date reportDateFrom = FormatDate.getDateFromString(reportDateFromStr);    
     Date reportDateTo = FormatDate.getDateFromString(reportDateToStr);
 
     if (costDateFrom != null && costDateTo != null && reportDateFrom != null && reportDateTo != null) {
 
-      costDateFrom = FormatDate.getStartOfDate(costDateFrom);
+      testInfo += "1";
+
+      costDateFrom = FormatDate.getStartOfDate(costDateFrom);      
       costDateTo = FormatDate.getStartOfDate(costDateTo);
-      reportDateFrom = FormatDate.getStartOfDate(reportDateFrom);
+      reportDateFrom = FormatDate.getStartOfDate(reportDateFrom);      
       reportDateTo = FormatDate.getStartOfDate(reportDateTo);
 
       Integer calculationDate = Integer.parseInt(costDateStr);
 
       // найти период пересечения диапазонов
       Date diapasonDateFrom = costDateFrom.after(reportDateFrom) ? costDateFrom : reportDateFrom;
+      
       Date diapasonDateTo = costDateTo.before(reportDateTo) ? costDateTo : reportDateTo;
 
       double amount = Double.parseDouble(amountStr);
       // проверить правильность найденного диапазона
-      if (
-              (costDateFrom.before(costDateTo) || costDateFrom.equals(costDateTo))
+      if ((costDateFrom.before(costDateTo) || costDateFrom.equals(costDateTo))
               && (reportDateFrom.before(reportDateTo) || reportDateFrom.equals(reportDateTo))
               && (diapasonDateFrom.before(diapasonDateTo) || diapasonDateFrom.equals(diapasonDateTo))) {
+
+        testInfo += "2";
+
         // если тип - единоразовый
         if (costType.equals(Periodicity.ONETIME.getId().toString())) {
+
+          testInfo += "3";
           // если дата costDateFrom входит в диапазон
           if ((costDateFrom.after(reportDateFrom) || costDateFrom.equals(reportDateFrom))
                   && (costDateFrom.before(reportDateTo) || costDateFrom.equals(reportDateTo))) {
@@ -57,6 +68,7 @@ public class CostCalculator {
             chargeAmount = amount;
           }
         } else if (costType.equals(Periodicity.EVERYDAY.getId().toString())) {
+          testInfo += "4";
           //  период не кончился
           boolean periodEnded = false;
           // первый день
@@ -70,16 +82,20 @@ public class CostCalculator {
           Calendar clCostTo = Calendar.getInstance();
           clCostTo.setTime(costDateTo);
           // прибавить
+          testInfo += " " + FormatDate.getDateInMysql(clDiapasonFrom.getTime()) + " " + FormatDate.getDateInMysql(clDiapasonTo.getTime()) + " " + FormatDate.getDateInMysql(clCostTo.getTime()) + "/";
           if (clDiapasonFrom.before(clDiapasonTo) || clDiapasonFrom.equals(clDiapasonTo)) {
+            testInfo += "4.1";
             charged = true;
             chargeAmount += amount;
           }
           // пока период не кончился
           while (!periodEnded) {
+            testInfo += "4.2";
             // прибавить день
             clDiapasonFrom.add(Calendar.DAY_OF_YEAR, 1);
             // если дата раньше чем конец периода и если это не день конца периода
             if ((clDiapasonFrom.before(clDiapasonTo) || clDiapasonFrom.equals(clDiapasonTo)) && clDiapasonFrom.before(clCostTo)) {
+              testInfo += "4.3";
               charged = true;
               chargeAmount += amount;
             } else {
@@ -87,6 +103,7 @@ public class CostCalculator {
             }
           }
         } else if (costType.equals(Periodicity.MONTHLY.getId().toString())) {
+          testInfo += "5";
           // период не кончился
           boolean periodEnded = false;
           // период первого месяца
@@ -135,6 +152,7 @@ public class CostCalculator {
             }
           }
         } else if (costType.equals(Periodicity.QUARTERLY.getId().toString())) {
+          testInfo += "6";
           // период первого месяца
           // начало - начало диапазона
           Calendar clDiapasonFrom = Calendar.getInstance();
@@ -185,6 +203,7 @@ public class CostCalculator {
             }
           }
         } else if (costType.equals(Periodicity.YEARLY.getId().toString())) {
+          testInfo += "7";
           // период первого месяца
           // начало - начало диапазона
           Calendar clDiapasonFrom = Calendar.getInstance();
@@ -222,11 +241,15 @@ public class CostCalculator {
     }
   }
 
+  public String getTestInfo() {
+    return testInfo;
+  }
+
   public boolean charged() {
-    return false;
+    return charged;
   }
 
   public double getChargeAmount() {
-    return 0;
+    return chargeAmount;
   }
 }
