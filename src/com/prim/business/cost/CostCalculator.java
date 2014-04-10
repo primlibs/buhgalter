@@ -111,7 +111,6 @@ public class CostCalculator {
     Calendar clDiapasonTo = Calendar.getInstance();
     clDiapasonTo.setTime(diapasonDateTo);
     // день конца периода платежа
-    // год конца периода платежа
     Calendar clCostTo = Calendar.getInstance();
     clCostTo.setTime(costDateTo);
     // прибавить
