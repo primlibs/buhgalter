@@ -103,6 +103,14 @@ public class SalaryCalculator {
     calculateNalogsByMain();
   }
   
+  public double getSumm() {
+    double summ = main;
+    for (Double val: values.values()) {
+      summ += val;
+    }
+    return summ;
+  }
+  
   public double getMain() {
     return main;
   }
