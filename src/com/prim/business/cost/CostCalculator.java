@@ -45,9 +45,9 @@ public class CostCalculator {
    * @param calculationDate дата, в которую нужно делать начисление
    * @throws Exception 
    */
-  public CostCalculator(Date costDateFrom, Date costDateTo, Date periodDateFrom, Date periodDateTo, double amount, String costType, int calculationDate) throws Exception {
+  public CostCalculator(Date costDateFrom, Date costDateTo, Date periodDateFrom, Date periodDateTo, double amount, Periodicity costType, int calculationDate) throws Exception {
 
-    if (costDateFrom != null  && periodDateFrom != null && periodDateTo != null) {
+    if (costDateFrom != null  && periodDateFrom != null && periodDateTo != null && costType != null) {
 
       testInfo += "1";
 
@@ -75,15 +75,15 @@ public class CostCalculator {
 
         testInfo += "2";
 
-        if (costType.equals(Periodicity.ONETIME.getId().toString())) {
+        if (costType.equals(Periodicity.ONETIME)) {
           chargeOneTime(costDateFrom, periodDateFrom, periodDateTo, amount);
-        } else if (costType.equals(Periodicity.EVERYDAY.getId().toString())) {
+        } else if (costType.equals(Periodicity.EVERYDAY)) {
           chargeEveryDay(diapasonDateFrom, diapasonDateTo, costDateTo, amount);
-        } else if (costType.equals(Periodicity.MONTHLY.getId().toString())) {
+        } else if (costType.equals(Periodicity.MONTHLY)) {
           chargeMonthly(diapasonDateFrom, diapasonDateTo, calculationDate, amount);
-        } else if (costType.equals(Periodicity.QUARTERLY.getId().toString())) {
+        } else if (costType.equals(Periodicity.QUARTERLY)) {
           chargeQuarterly(diapasonDateFrom, diapasonDateTo, calculationDate, amount);
-        } else if (costType.equals(Periodicity.YEARLY.getId().toString())) {
+        } else if (costType.equals(Periodicity.YEARLY)) {
           chargeYearly(diapasonDateFrom, diapasonDateTo, calculationDate, amount);
         }
       }

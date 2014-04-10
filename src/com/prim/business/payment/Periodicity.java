@@ -21,10 +21,18 @@ public enum Periodicity {
   private final Integer id;
   private final String name;
 
+  /**
+   * возвращает ИД
+   * @return 
+   */
   public Integer getId() {
     return id;
   }
 
+  /**
+   * возвращает название
+   * @return 
+   */
   public String getName() {
     return name;
   }
@@ -34,6 +42,10 @@ public enum Periodicity {
     this.name = name;
   }
 
+  /**
+   * возвращает Map, в котором ключами являются ИД, а значениями - названия
+   * @return 
+   */
   public static Map<String, Object> all() {
     Map<String, Object> map = new LinkedHashMap();
     for (Periodicity type : Periodicity.values()) {
@@ -42,6 +54,11 @@ public enum Periodicity {
     return map;
   }
 
+  /**
+   * возвращает имя по ИД
+   * @param typeId
+   * @return 
+   */
   public static String getNameById(Object typeId) {
     String name = "";
     if (typeId != null) {
@@ -53,4 +70,14 @@ public enum Periodicity {
     }
     return name;
   }
+  
+  public static Periodicity getById(int id) {
+    for (Periodicity p:Periodicity.values()) {
+      if (p.getId() == id) {
+        return p;
+      }
+    }
+    return null;
+  }
+  
 }
