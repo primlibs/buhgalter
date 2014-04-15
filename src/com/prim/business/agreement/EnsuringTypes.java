@@ -13,9 +13,9 @@ import java.util.Map;
  *
  * @author Rice Pavel
  */
-public enum AgreementTypes {
+public enum EnsuringTypes {
 
-  HYPOTHEC(1, "Ипотека"), PLEDGE(2, "Залог");
+  LEASING(1, "Лизинг"), PLEDGE(2, "Залог");
   private Integer id;
   private String name;
 
@@ -27,14 +27,14 @@ public enum AgreementTypes {
     return name;
   }
 
-  AgreementTypes(int id, String name) {
+  EnsuringTypes(int id, String name) {
     this.id = id;
     this.name = name;
   }
 
   public static Map<String, Object> all() {
     Map<String, Object> map = new LinkedHashMap();
-    for (AgreementTypes type : AgreementTypes.values()) {
+    for (EnsuringTypes type : EnsuringTypes.values()) {
       map.put(type.id.toString(), type.name);
     }
     return map;
@@ -42,7 +42,7 @@ public enum AgreementTypes {
 
   public static Map<String, Object> immovables() {
     Map<String, Object> map = new LinkedHashMap();
-    map.put(HYPOTHEC.id.toString(), HYPOTHEC.name);
+    map.put(LEASING.id.toString(), LEASING.name);
     map.put(PLEDGE.id.toString(), PLEDGE.name);
     return map;
   }
