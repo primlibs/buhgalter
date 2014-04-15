@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public enum EstateTypes {
   
-  STEAD(1, "Земля"), BUILDING(2, "Здание"), LIFTING_ENGINE(3, "Грузоподъемная техника"), 
+  STEAD(1, "Земля"), BUILDING(2, "Здание"), CONSTRUCTION(8, "Сооружения"), LIFTING_ENGINE(3, "Грузоподъемная техника"), 
   MOTORIZED_VEHICLES(4, "Самоходные машины"), CAR(5, "Автотранспорт"), SHIP(6, "Суда"), OTHER(7, "Другое");
   
   private Integer id;
@@ -50,6 +50,7 @@ public enum EstateTypes {
     Map<String, Object> map = new LinkedHashMap();
     map.put(STEAD.id.toString(), STEAD.name);
     map.put(BUILDING.id.toString(), BUILDING.name);
+    map.put(CONSTRUCTION.id.toString(), CONSTRUCTION.name);
     return map;
   }
   
