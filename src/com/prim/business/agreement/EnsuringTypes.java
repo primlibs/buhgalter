@@ -40,13 +40,6 @@ public enum EnsuringTypes {
     return map;
   }
 
-  public static Map<String, Object> immovables() {
-    Map<String, Object> map = new LinkedHashMap();
-    map.put(LEASING.id.toString(), LEASING.name);
-    map.put(PLEDGE.id.toString(), PLEDGE.name);
-    return map;
-  }
-
   public static String getNameById(Object typeId) {
     String name = "";
     if (typeId != null) {
