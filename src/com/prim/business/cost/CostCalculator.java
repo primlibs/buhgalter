@@ -20,6 +20,16 @@ import java.util.List;
 public class CostCalculator {
 
   /**
+   * объект, который содержит список сумм для начисления, по месяцам и по годам 
+   */
+  private AmountList amountList;
+  
+  /**
+   * базовая сумма для начисления
+   */
+  private final double amount;
+  
+  /**
    * нужно ли делать начисление
    */
   private boolean charged;
@@ -47,6 +57,8 @@ public class CostCalculator {
    */
   public CostCalculator(Date costDateFrom, Date costDateTo, Date periodDateFrom, Date periodDateTo, double amount, Periodicity costType, int calculationDate) throws Exception {
 
+    this.amount = amount;
+    
     if (costDateFrom != null  && periodDateFrom != null && periodDateTo != null && costType != null) {
 
       testInfo += "1";
@@ -76,31 +88,53 @@ public class CostCalculator {
         testInfo += "2";
 
         if (costType.equals(Periodicity.ONETIME)) {
-          chargeOneTime(costDateFrom, periodDateFrom, periodDateTo, amount);
+          chargeOneTime(costDateFrom, periodDateFrom, periodDateTo);
         } else if (costType.equals(Periodicity.EVERYDAY)) {
-          chargeEveryDay(diapasonDateFrom, diapasonDateTo, costDateTo, amount);
+          chargeEveryDay(diapasonDateFrom, diapasonDateTo, costDateTo);
         } else if (costType.equals(Periodicity.MONTHLY)) {
-          chargeMonthly(diapasonDateFrom, diapasonDateTo, calculationDate, amount);
+          chargeMonthly(diapasonDateFrom, diapasonDateTo, calculationDate);
         } else if (costType.equals(Periodicity.QUARTERLY)) {
-          chargeQuarterly(diapasonDateFrom, diapasonDateTo, calculationDate, amount);
+          chargeQuarterly(diapasonDateFrom, diapasonDateTo, calculationDate);
         } else if (costType.equals(Periodicity.YEARLY)) {
-          chargeYearly(diapasonDateFrom, diapasonDateTo, calculationDate, amount);
+          chargeYearly(diapasonDateFrom, diapasonDateTo, calculationDate);
         }
       }
     }
   }
+  
+  public void setAmountList(AmountList amountList) {
+    this.amountList = amountList;
+  }
+  
+  /**
+   * получить сумму
+   * @param year год
+   * @param month месяц от 1 до 12
+   * @return 
+   */
+  private double getAmount(int year, int month) {
+    if (amountList == null) {
+      return amount;
+    } else {
+      return amountList.getAmount(year, month);
+    }
+  }
 
-  private void chargeOneTime(Date costDateFrom, Date reportDateFrom, Date reportDateTo, double amount) {
+  private void chargeOneTime(Date costDateFrom, Date reportDateFrom, Date reportDateTo) {
     testInfo += "3";
     // если дата costDateFrom входит в диапазон
     if ((costDateFrom.after(reportDateFrom) || costDateFrom.equals(reportDateFrom))
             && (costDateFrom.before(reportDateTo) || costDateFrom.equals(reportDateTo))) {
       charged = true;
-      chargeAmount = amount;
+      Calendar cl = Calendar.getInstance();
+      cl.setTime(costDateFrom);
+      chargeAmount = getAmount(cl.get(Calendar.YEAR), cl.get(Calendar.MONTH) + 1);
     }
   }
+  
 
-  private void chargeEveryDay(Date diapasonDateFrom, Date diapasonDateTo, Date costDateTo, double amount) {
+
+  private void chargeEveryDay(Date diapasonDateFrom, Date diapasonDateTo, Date costDateTo) {
     testInfo += "4";
     //  период не кончился
     boolean periodEnded = false;
@@ -118,7 +152,7 @@ public class CostCalculator {
     if (clDiapasonFrom.before(clDiapasonTo) || clDiapasonFrom.equals(clDiapasonTo)) {
       testInfo += "4.1";
       charged = true;
-      chargeAmount += amount;
+      chargeAmount += getAmount(clDiapasonFrom.get(Calendar.YEAR), clDiapasonFrom.get(Calendar.MONTH) + 1);
     }
     // пока период не кончился
     while (!periodEnded) {
@@ -129,14 +163,14 @@ public class CostCalculator {
       if ((clDiapasonFrom.before(clDiapasonTo) || clDiapasonFrom.equals(clDiapasonTo)) && clDiapasonFrom.before(clCostTo)) {
         testInfo += "4.3";
         charged = true;
-        chargeAmount += amount;
+        chargeAmount += getAmount(clDiapasonFrom.get(Calendar.YEAR), clDiapasonFrom.get(Calendar.MONTH) + 1);;
       } else {
         periodEnded = true;
       }
     }
   }
 
-  private void chargeMonthly(Date diapasonDateFrom, Date diapasonDateTo, int calculationDate, double amount) {
+  private void chargeMonthly(Date diapasonDateFrom, Date diapasonDateTo, int calculationDate) {
     testInfo += "5";
     // период не кончился
     boolean periodEnded = false;
@@ -158,7 +192,7 @@ public class CostCalculator {
     // если число входит в этот период - начислить
     if (day >= clDiapasonFrom.get(Calendar.DAY_OF_MONTH) && day <= clEnd.get(Calendar.DAY_OF_MONTH)) {
       charged = true;
-      chargeAmount += amount;
+      chargeAmount += getAmount(clDiapasonFrom.get(Calendar.YEAR), clDiapasonFrom.get(Calendar.MONTH) + 1);;
     }
 
     // пока период не кончился
@@ -179,7 +213,7 @@ public class CostCalculator {
         // если число входит в этот период - начислить
         if (day >= clDiapasonFrom.get(Calendar.DAY_OF_MONTH) && day <= clEnd.get(Calendar.DAY_OF_MONTH)) {
           charged = true;
-          chargeAmount += amount;
+          chargeAmount += getAmount(clDiapasonFrom.get(Calendar.YEAR), clDiapasonFrom.get(Calendar.MONTH) + 1);;
         }
       } else {
         periodEnded = true;
@@ -188,7 +222,7 @@ public class CostCalculator {
 
   }
 
-  private void chargeQuarterly(Date diapasonDateFrom, Date diapasonDateTo, int calculationDate, double amount) {
+  private void chargeQuarterly(Date diapasonDateFrom, Date diapasonDateTo, int calculationDate) {
     testInfo += "6";
     // период первого месяца
     // начало - начало диапазона
@@ -219,7 +253,7 @@ public class CostCalculator {
     // если число входи в этот период и если месяц один из определенных месяцев
     if (day >= clDiapasonFrom.get(Calendar.DAY_OF_MONTH) && months.contains(clDiapasonFrom.get(Calendar.MONTH))) {
       charged = true;
-      chargeAmount += amount;
+      chargeAmount += getAmount(clDiapasonFrom.get(Calendar.YEAR), clDiapasonFrom.get(Calendar.MONTH) + 1);;
     }
 
     // переменная - период не кончился
@@ -233,7 +267,7 @@ public class CostCalculator {
       if (clDiapasonFrom.before(clDiapasonTo) || clDiapasonFrom.equals(clDiapasonTo)) {
         if (months.contains(clDiapasonFrom.get(Calendar.MONTH))) {
           charged = true;
-          chargeAmount += amount;
+          chargeAmount += getAmount(clDiapasonFrom.get(Calendar.YEAR), clDiapasonFrom.get(Calendar.MONTH) + 1);;
         }
       } else {
         periodEnded = true;
@@ -241,7 +275,7 @@ public class CostCalculator {
     }
   }
 
-  private void chargeYearly(Date diapasonDateFrom, Date diapasonDateTo, int calculationDate, double amount) {
+  private void chargeYearly(Date diapasonDateFrom, Date diapasonDateTo, int calculationDate) {
     testInfo += "7";
     // период первого месяца
     // начало - начало диапазона
@@ -256,7 +290,7 @@ public class CostCalculator {
     // если число входи в этот период и если месяц один из определенных месяцев
     if (day >= clDiapasonFrom.get(Calendar.DAY_OF_MONTH) && clDiapasonFrom.get(Calendar.MONTH) == month) {
       charged = true;
-      chargeAmount += amount;
+      chargeAmount += getAmount(clDiapasonFrom.get(Calendar.YEAR), clDiapasonFrom.get(Calendar.MONTH) + 1);;
     }
     // переменная - период не кончился
     boolean periodEnded = false;
@@ -269,7 +303,7 @@ public class CostCalculator {
       if (clDiapasonFrom.before(clDiapasonTo) || clDiapasonFrom.equals(clDiapasonTo)) {
         if (clDiapasonFrom.get(Calendar.MONTH) == month) {
           charged = true;
-          chargeAmount += amount;
+          chargeAmount += getAmount(clDiapasonFrom.get(Calendar.YEAR), clDiapasonFrom.get(Calendar.MONTH) + 1);;
         }
       } else {
         periodEnded = true;
