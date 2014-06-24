@@ -43,6 +43,18 @@ public class CostCalculator {
    * тестовая информация
    */
   private String testInfo = "";
+  
+  /**
+   * процент
+   */
+  private Double percent = null;
+  
+  private Date costDateFrom;
+  private Date costDateTo;
+  private Date periodDateFrom;
+  private Date periodDateTo;
+  private Periodicity costType;
+  private int calculationDate;
 
   /**
    * создает объект и сразу вычисляет сумму начисления
@@ -59,7 +71,26 @@ public class CostCalculator {
 
     this.amount = amount;
     
-    if (costDateFrom != null  && periodDateFrom != null && periodDateTo != null && costType != null) {
+    this.costDateFrom = costDateFrom;
+    this.costDateTo = costDateTo;
+    this.periodDateFrom = periodDateFrom;
+    this.periodDateTo = periodDateTo;
+    this.costType = costType;
+    this.calculationDate = calculationDate;
+    
+   
+  }
+  
+  public void setAmountList(AmountList amountList) {
+    this.amountList = amountList;
+  }
+
+  public void setPercent(Double percent) {
+    this.percent = percent;
+  }
+  
+  public void calculate() {
+     if (costDateFrom != null  && periodDateFrom != null && periodDateTo != null && costType != null) {
 
       testInfo += "1";
 
@@ -100,11 +131,9 @@ public class CostCalculator {
         }
       }
     }
-  }
+  } 
+ 
   
-  public void setAmountList(AmountList amountList) {
-    this.amountList = amountList;
-  }
   
   /**
    * получить сумму
@@ -113,11 +142,16 @@ public class CostCalculator {
    * @return 
    */
   private double getAmount(int year, int month) {
+    double a = 0;
     if (amountList == null) {
-      return amount;
+      a = amount;
     } else {
-      return amountList.getAmount(year, month);
+      a = amountList.getAmount(year, month);
     }
+    if (percent != null) {
+      a = (a * percent) / 100.0;
+    }
+    return a;
   }
 
   private void chargeOneTime(Date costDateFrom, Date reportDateFrom, Date reportDateTo) {
