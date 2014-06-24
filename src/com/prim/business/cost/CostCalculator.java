@@ -13,42 +13,45 @@ import java.util.List;
 
 /**
  *
- * класс вычисляет размер начислений
+ * класс вычисляет размер начислений <br/><br/>
+ *
+ * Класс вычисляет размер начислений исходя из переданных ему параметров.
+ * Сначала нужно создать объект этого класса и передать ему параметры (в
+ * конструкторе или с помощью методов). Затем нужно вызвать метод calculate(),
+ * чтобы рассчитать итоговую сумму начисления. <br/><br/>
+ * 
+ * Начальную сумму начисления можно установить двумя способами. 1. Можно установить параметр amount в конструкторе.
+ * 2. Методом  setAmountList() Можно установить объект AmountList, который возвращает сумму начисления в зависимости от месяца и года.
+ * Если установлен объект AmountList, то сумма amount не имеет значения.
  *
  * @author Rice Pavel
  */
 public class CostCalculator {
 
   /**
-   * объект, который содержит список сумм для начисления, по месяцам и по годам 
+   * объект, который содержит список сумм для начисления, по месяцам и по годам
    */
   private AmountList amountList;
-  
   /**
    * базовая сумма для начисления
    */
   private final double amount;
-  
   /**
    * нужно ли делать начисление
    */
   private boolean charged;
-  
   /**
    * сумма начисления
    */
   private double chargeAmount;
-  
   /**
    * тестовая информация
    */
   private String testInfo = "";
-  
   /**
    * процент
    */
   private Double percent = null;
-  
   private Date costDateFrom;
   private Date costDateTo;
   private Date periodDateFrom;
@@ -58,39 +61,52 @@ public class CostCalculator {
 
   /**
    * создает объект и сразу вычисляет сумму начисления
+   *
    * @param costDateFrom дата начала начисления
    * @param costDateTo дата конца начисления. Может равняться null
    * @param periodDateFrom дата начала периода, за который нужно рассчитать
    * @param periodDateTo дата конца периода, за который нужно рассчитать
-   * @param amount сумма начисления
+   * @param amount сумма начисления. Если установлен объект amountList, то сумма
+   * не имеет значения.
    * @param costType тип начисления
    * @param calculationDate дата, в которую нужно делать начисление
-   * @throws Exception 
+   * @throws Exception
    */
   public CostCalculator(Date costDateFrom, Date costDateTo, Date periodDateFrom, Date periodDateTo, double amount, Periodicity costType, int calculationDate) throws Exception {
-
     this.amount = amount;
-    
     this.costDateFrom = costDateFrom;
     this.costDateTo = costDateTo;
     this.periodDateFrom = periodDateFrom;
     this.periodDateTo = periodDateTo;
     this.costType = costType;
     this.calculationDate = calculationDate;
-    
-   
   }
-  
+
+  /**
+   * установить объект amountList, который возвращает сумму в зависимости от
+   * периода времени.
+   *
+   * @param amountList
+   */
   public void setAmountList(AmountList amountList) {
     this.amountList = amountList;
   }
 
+  /**
+   * установить процент, от которого должна начисляться сумма. По умолчанию -
+   * 100%
+   *
+   * @param percent
+   */
   public void setPercent(Double percent) {
     this.percent = percent;
   }
-  
+
+  /**
+   * вычислить
+   */
   public void calculate() {
-     if (costDateFrom != null  && periodDateFrom != null && periodDateTo != null && costType != null) {
+    if (costDateFrom != null && periodDateFrom != null && periodDateTo != null && costType != null) {
 
       testInfo += "1";
 
@@ -100,7 +116,7 @@ public class CostCalculator {
         cl.add(Calendar.DAY_OF_YEAR, 1);
         costDateTo = cl.getTime();
       }
-      
+
       costDateFrom = FormatDate.getStartOfDate(costDateFrom);
       costDateTo = FormatDate.getStartOfDate(costDateTo);
       periodDateFrom = FormatDate.getStartOfDate(periodDateFrom);
@@ -131,15 +147,38 @@ public class CostCalculator {
         }
       }
     }
-  } 
- 
-  
+  }
   
   /**
+   * 
+   * @return тестовую информацию
+   */
+  public String getTestInfo() {
+    return testInfo;
+  }
+
+  /**
+   * 
+   * @return было ли сделано начисление
+   */
+  public boolean charged() {
+    return charged;
+  }
+
+  /**
+   * 
+   * @return итоговую сумму начисления
+   */
+  public double getChargeAmount() {
+    return chargeAmount;
+  }
+
+  /**
    * получить сумму
+   *
    * @param year год
    * @param month месяц от 1 до 12
-   * @return 
+   * @return
    */
   private double getAmount(int year, int month) {
     double a = 0;
@@ -165,8 +204,6 @@ public class CostCalculator {
       chargeAmount = getAmount(cl.get(Calendar.YEAR), cl.get(Calendar.MONTH) + 1);
     }
   }
-  
-
 
   private void chargeEveryDay(Date diapasonDateFrom, Date diapasonDateTo, Date costDateTo) {
     testInfo += "4";
@@ -345,15 +382,5 @@ public class CostCalculator {
     }
   }
 
-  public String getTestInfo() {
-    return testInfo;
-  }
-
-  public boolean charged() {
-    return charged;
-  }
-
-  public double getChargeAmount() {
-    return chargeAmount;
-  }
+  
 }
